@@ -1,0 +1,621 @@
+/* Stilovi ekrana Kalendar, Izveštaji, Projekti i Podešavanja.
+   Osnovni tokeni i ekran Praćenje vremena su u app.css. */
+
+/* ---------- zajednicke kartice i kontrole ---------- */
+
+.card {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  overflow: hidden;
+  flex-shrink: 0;
+}
+
+.card-head {
+  height: 48px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 22px;
+  background: var(--subtle);
+  border-bottom: 1px solid var(--divider);
+}
+
+.card-head h2 {
+  margin: 0;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--text-2);
+}
+
+.card-note {
+  font-size: 12px;
+  color: var(--muted);
+}
+
+.card-empty {
+  padding: 36px 22px;
+  text-align: center;
+  color: var(--muted);
+}
+
+.card-foot {
+  padding: 12px 22px;
+  border-top: 1px solid var(--divider);
+  font-size: 12px;
+  color: var(--muted);
+  background: var(--subtle);
+}
+
+.card-foot code {
+  font-family: var(--mono);
+  font-size: 11px;
+  background: var(--tag-bg);
+  padding: 2px 5px;
+  border-radius: 5px;
+}
+
+.btn {
+  height: 36px;
+  padding: 0 14px;
+  border-radius: 10px;
+  border: 1px solid var(--border);
+  background: var(--card);
+  color: var(--text-2);
+  font-size: 13px;
+  font-weight: 500;
+  white-space: nowrap;
+}
+
+.btn:hover {
+  background: var(--subtle);
+}
+
+.btn.primary {
+  background: var(--accent);
+  border-color: var(--accent);
+  color: #ffffff;
+}
+
+.btn.primary:disabled {
+  background: #cfd8d4;
+  border-color: #cfd8d4;
+  cursor: default;
+}
+
+.btn.danger {
+  background: #b91c1c;
+  border-color: #b91c1c;
+  color: #ffffff;
+}
+
+.btn.sm {
+  height: 30px;
+  padding: 0 10px;
+  font-size: 12px;
+}
+
+.text-input,
+.num-input,
+.select {
+  height: 36px;
+  padding: 0 10px;
+  border-radius: 10px;
+  border: 1px solid var(--border);
+  background: var(--card);
+  font-family: inherit;
+  font-size: 14px;
+  color: var(--text);
+}
+
+.num-input {
+  width: 76px;
+  font-family: var(--mono);
+}
+
+.select {
+  cursor: pointer;
+}
+
+/* ---------- Kalendar ---------- */
+
+.cal {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  flex-shrink: 0;
+}
+
+.cal-head {
+  display: flex;
+  background: var(--subtle);
+  border-bottom: 1px solid var(--divider);
+}
+
+.cal-gutter {
+  width: 56px;
+  flex-shrink: 0;
+}
+
+.cal-head .cal-day-head {
+  flex: 1 1 0;
+  min-width: 0;
+  height: 48px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  font-size: 12px;
+  color: var(--muted);
+  border-left: 1px solid var(--divider);
+}
+
+.cal-day-head .cal-date {
+  font-weight: 600;
+  color: var(--text-2);
+}
+
+.cal-day-head.is-today .cal-dow,
+.cal-day-head.is-today .cal-date {
+  color: var(--accent);
+  font-weight: 600;
+}
+
+.cal-body {
+  display: flex;
+  position: relative;
+}
+
+.cal-hour-label {
+  position: relative;
+}
+
+.cal-hour-label span {
+  position: absolute;
+  top: -7px;
+  right: 8px;
+  font-family: var(--mono);
+  font-size: 11px;
+  color: var(--muted);
+}
+
+.cal-grid {
+  position: relative;
+  flex-grow: 1;
+  min-width: 0;
+  user-select: none;
+}
+
+.cal-hour-line {
+  position: absolute;
+  left: 0;
+  right: 0;
+  border-top: 1px solid var(--divider);
+}
+
+.cal-col {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  border-left: 1px solid var(--divider);
+  cursor: crosshair;
+}
+
+.cal-col.is-today {
+  background: rgba(31, 111, 92, 0.03);
+}
+
+.cal-now {
+  position: absolute;
+  left: 0;
+  right: 0;
+  height: 2px;
+  background: var(--running);
+  z-index: 3;
+  pointer-events: none;
+}
+
+.cal-block {
+  position: absolute;
+  left: 3px;
+  right: 3px;
+  border-radius: 7px;
+  border-left: 3px solid;
+  padding: 4px 7px;
+  overflow: hidden;
+  cursor: grab;
+  z-index: 2;
+}
+
+.cal-block:active {
+  cursor: grabbing;
+}
+
+.cal-block-title {
+  font-size: 12px;
+  font-weight: 500;
+  color: var(--text);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.cal-block-meta {
+  font-family: var(--mono);
+  font-size: 10px;
+  color: #52525b;
+  white-space: nowrap;
+}
+
+.cal-block-handle {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  height: 7px;
+  cursor: ns-resize;
+}
+
+.cal-ghost {
+  position: absolute;
+  border-radius: 7px;
+  border: 1.5px dashed var(--accent);
+  background: rgba(31, 111, 92, 0.1);
+  padding: 4px 7px;
+  pointer-events: none;
+  z-index: 4;
+}
+
+.cal-hint {
+  margin: 0;
+  padding: 12px 22px;
+  border-top: 1px solid var(--divider);
+  background: var(--subtle);
+  font-size: 12px;
+  color: var(--muted);
+}
+
+/* ---------- Izvestaji ---------- */
+
+.seg {
+  display: flex;
+  gap: 4px;
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 4px;
+  align-self: flex-start;
+  flex-shrink: 0;
+}
+
+.seg-btn {
+  height: 34px;
+  padding: 0 14px;
+  border: 0;
+  border-radius: 9px;
+  background: transparent;
+  color: var(--muted);
+  font-size: 13px;
+  font-weight: 500;
+}
+
+.seg-btn:hover {
+  color: var(--text-2);
+}
+
+.seg-btn.active {
+  background: var(--accent-soft);
+  color: var(--accent);
+  font-weight: 600;
+}
+
+.stat-row {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 14px;
+  flex-shrink: 0;
+}
+
+.stat {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  padding: 16px 18px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.stat-label {
+  font-size: 12px;
+  color: var(--muted);
+  font-weight: 500;
+}
+
+.stat-value {
+  font-size: 26px;
+  font-weight: 600;
+  letter-spacing: -0.02em;
+}
+
+.stat-value.accent {
+  color: var(--accent);
+}
+
+.rep-chart {
+  display: flex;
+  align-items: flex-end;
+  gap: 10px;
+  padding: 20px 22px 16px;
+}
+
+.rep-chart.compact {
+  gap: 3px;
+}
+
+.rep-col {
+  flex: 1 1 0;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+}
+
+.rep-slot {
+  width: 100%;
+  height: 120px;
+  display: flex;
+  align-items: flex-end;
+}
+
+.rep-bar {
+  width: 100%;
+  border-radius: 5px;
+  background: var(--accent);
+}
+
+.rep-bar.empty {
+  background: var(--bar-empty);
+}
+
+.rep-label {
+  font-size: 11px;
+  color: var(--muted);
+}
+
+.rep-row {
+  display: grid;
+  grid-template-columns: 8px minmax(0, 180px) 1fr 44px 64px 64px;
+  align-items: center;
+  gap: 12px;
+  height: 52px;
+  padding: 0 22px;
+  border-top: 1px solid var(--divider);
+}
+
+.rep-row:first-of-type {
+  border-top: 0;
+}
+
+.rep-name {
+  font-size: 14px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.rep-track {
+  height: 8px;
+  border-radius: 999px;
+  background: var(--divider);
+  overflow: hidden;
+}
+
+.rep-fill {
+  height: 8px;
+  border-radius: 999px;
+}
+
+.rep-share {
+  font-size: 12px;
+  color: var(--muted);
+  text-align: right;
+}
+
+.rep-billable {
+  font-size: 13px;
+  color: var(--accent);
+  text-align: right;
+}
+
+.rep-total {
+  font-size: 15px;
+  font-weight: 600;
+  text-align: right;
+}
+
+/* ---------- Projekti ---------- */
+
+.proj-new {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 16px 22px;
+}
+
+.proj-new .text-input {
+  flex-grow: 1;
+}
+
+.swatch {
+  width: 28px;
+  height: 28px;
+  border-radius: 8px;
+  border: 1px solid rgba(20, 21, 23, 0.12);
+  padding: 0;
+  flex-shrink: 0;
+}
+
+.swatch.lg {
+  width: 36px;
+  height: 36px;
+  border-radius: 10px;
+}
+
+.swatch.sm {
+  width: 22px;
+  height: 22px;
+  border-radius: 6px;
+}
+
+.swatch-wrap {
+  position: relative;
+}
+
+.palette {
+  position: absolute;
+  top: 34px;
+  left: 0;
+  z-index: 10;
+  display: grid;
+  grid-template-columns: repeat(5, auto);
+  gap: 6px;
+  padding: 8px;
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  box-shadow: 0 8px 24px rgba(20, 21, 23, 0.12);
+}
+
+.proj-row {
+  display: grid;
+  grid-template-columns: 28px minmax(0, 1fr) 88px 72px 72px auto;
+  align-items: center;
+  gap: 14px;
+  min-height: 56px;
+  padding: 0 22px;
+  border-top: 1px solid var(--divider);
+}
+
+.proj-name {
+  border: 0;
+  background: transparent;
+  font-family: inherit;
+  font-size: 14px;
+  color: var(--text);
+  padding: 6px 8px;
+  border-radius: 8px;
+  min-width: 0;
+}
+
+.proj-name:hover,
+.proj-name:focus {
+  background: var(--subtle);
+}
+
+.proj-count {
+  font-size: 12px;
+  color: var(--muted);
+  text-align: right;
+}
+
+.proj-billable {
+  font-size: 13px;
+  color: var(--accent);
+  text-align: right;
+}
+
+.proj-total {
+  font-size: 15px;
+  font-weight: 600;
+  text-align: right;
+}
+
+.confirm {
+  display: flex;
+  gap: 6px;
+}
+
+/* ---------- Podesavanja ---------- */
+
+.set-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 24px;
+  padding: 16px 22px;
+  border-top: 1px solid var(--divider);
+}
+
+.set-row:first-of-type {
+  border-top: 0;
+}
+
+.set-text {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  min-width: 0;
+}
+
+.set-text strong {
+  font-size: 14px;
+  font-weight: 600;
+}
+
+.set-text span {
+  font-size: 12px;
+  color: var(--muted);
+}
+
+.set-text .path {
+  font-family: var(--mono);
+  font-size: 11px;
+  word-break: break-all;
+}
+
+.set-control {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-shrink: 0;
+}
+
+.set-unit {
+  font-size: 13px;
+  color: var(--muted);
+}
+
+.cal-block-dur {
+  font-family: var(--mono);
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--text-2);
+  margin-top: 2px;
+}
+
+/* Sedam dana preko cele sirine daje preteske stubove — ogranicavamo ih. */
+.rep-chart:not(.compact) .rep-col {
+  max-width: 72px;
+}
+
+.rep-chart:not(.compact) {
+  justify-content: space-between;
+}
+
+.cal-hidden {
+  color: var(--running);
+}
+
+/* Tri i vise preklopljenih unosa dele usku kolonu — ostaje samo naslov. */
+.cal-block.tight {
+  padding: 3px 4px;
+}
+
+.cal-block.tight .cal-block-title {
+  font-size: 11px;
+}

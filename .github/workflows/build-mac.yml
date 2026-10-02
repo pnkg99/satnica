@@ -1,0 +1,41 @@
+# macOS build — dmg se ne moze praviti na Windowsu, zato ide na macos runneru.
+# Okida se tagom v* (npr. git tag v1.0.0 && git push --tags) ili rucno iz Actions taba.
+name: build-mac
+
+on:
+  push:
+    tags: ['v*']
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  build:
+    runs-on: macos-latest
+    env:
+      # .npmrc pokazuje kes na D: — na Mac-u to ne vazi
+      npm_config_cache: ${{ github.workspace }}/../.npm-cache
+      # prototip nije potpisan — ne trazi sertifikat na runneru
+      CSC_IDENTITY_AUTO_DISCOVERY: 'false'
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+
+      - run: npm ci
+
+      - run: npm run build && npx electron-builder --mac --publish never
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: satnica-mac
+          path: dist/*.dmg
+
+      - name: Release
+        if: startsWith(github.ref, 'refs/tags/')
+        uses: softprops/action-gh-release@v2
+        with:
+          files: dist/*.dmg
